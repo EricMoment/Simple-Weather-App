@@ -53,7 +53,7 @@ function clearEntries() {
 
 //getWeather('brighton');
 
-//fetch('https://api.openweathermap.org/data/2.5/weather?q=matsumoto&lang=en&appid=be2261b09598bb533e609e98c10fcace&units=metric', {mode: 'cors'})
+//fetch('https://api.openweathermap.org/data/2.5/weather?q=matsumoto&lang=en&appid=lol&units=metric', {mode: 'cors'})
 //  .then((response) => {
 //    return response.json()
 //  }).then((data) => {
