@@ -9,7 +9,7 @@ async function getWeather(city) {
   try {
     const starttimer = Date.now()
     clearEntries()()
-    let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=en&appid=be2261b09598bb533e609e98c10fcace&units=metric`, {mode: 'cors'})
+    let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=en&appid=lol&units=metric`, {mode: 'cors'})
     //console.log(response)
     let data = await response.json();
     //console.log(data)
