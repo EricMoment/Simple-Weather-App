@@ -6,7 +6,7 @@ const err_bar = document.querySelector('.err');
 const form = document.querySelector('form');
 const input = document.querySelector('input');
 const icon = document.querySelector('.icon')
-const temp_feels_like = document.querySelector('temp_feels_like')
+const temp_feels_like = document.querySelector('.temp_feels_like')
 const sunrise = document.querySelector('.sunrise');
 const sunset = document.querySelector('.sunset')
 
@@ -29,11 +29,12 @@ async function getWeather(city) {
 
 function showData(data) {
   city_name.textContent = data.name
-  temperature.textContent = `${data.main.temp} °C`
-  weather.textContent = data.weather[0].description;
+  temperature.textContent = `${data.main.temp} °`
+  temp_feels_like.textContent = `${data.main.feels_like} °`
+  weather.textContent = capitalizeLetters(data.weather[0].description);
   icon.alt = data.weather[0].description;
   icon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
-  wind.textContent = `Wind Speed: ${data.wind.speed} m/s`
+  wind.textContent = `${data.wind.speed} m/s`
   sunrise.textContent = getTime(data.sys.sunrise, data.timezone)
   sunset.textContent = getTime(data.sys.sunset, data.timezone)
 }
@@ -41,6 +42,7 @@ function showData(data) {
 function clearEntries() {
   city_name.textContent = '';
   temperature.textContent = '';
+  temp_feels_like.textContent = '';
   weather.textContent = '';
   wind.textContent = '';
   err_bar.textContent = '';
@@ -50,13 +52,20 @@ function clearEntries() {
   sunset.textContent = '';
 };
 
+function capitalizeLetters(str) {
+  let [word1, word2] = str.split(' ');
+  let word1Cap = word1.charAt(0).toUpperCase();
+  let word2Cap = word2.charAt(0).toUpperCase();
+  return `${word1Cap}${word1.slice(1)} ${word2Cap}${word2.slice(1)}`;
+}
 
 function getTime(unixTime, timezone) {
   let convertedTime = new Date((unixTime + timezone) * 1000)
   let hour = convertedTime.getUTCHours()
   let min = convertedTime.getUTCMinutes()
-  let time = `${hour}:${min}`
-  return time
+  if (hour < 10) { hour = '0' + hour }
+  if (min < 10) { min = '0' + min }
+  return `${hour}:${min}`
 }
 
 (function searchCity() {
@@ -71,7 +80,7 @@ function getTime(unixTime, timezone) {
 
 (async function rotate_city() {
   //let list = ['brighton', 'miami', 'nagano', 'hiroshima', 'glasgow', 'castleford', 'beirut', 'kolkata', 'riyadh']
-  let list = ['brighton']
+  let list = ['hiroshima']
   while (true) {
     getWeather(list[0])
     await new Promise(resolve => setTimeout(resolve, 500000));

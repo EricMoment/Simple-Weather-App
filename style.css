@@ -33,22 +33,68 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  background-color: lightgray;
+  padding: 16px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-.weather_card {
-  border-radius: 15px;
-  border: 2px solid grey;
-  width: 600px;
-  height: 200px;
+.title {
+  font-size: 3em;
+}
+
+.search {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  gap: 4px;
+  margin: .5em;
 }
-input {
+.weather_card {
+  border-radius: 15px;
+  border: 1px solid rgb(118, 146, 170);
+  width: 600px;
+  min-height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color:rgb(118, 146, 170);
+  padding: 8px;
+}
+form > * {
   border: 2px solid #000;
   margin-bottom: 15px;
   padding: 5px;
   border-radius: 5px;
 }
+
+.top {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.bottom {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr)
+}
+
+.top > div, .bottom > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.name, .temp {
+  color: whitesmoke;
+  font-size: 2em;
+}
+
+.weather, .bottom > div > p {
+  color: whitesmoke;
+  font-size: 1em;
+}
+
