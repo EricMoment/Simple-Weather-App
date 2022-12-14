@@ -9,14 +9,24 @@
   <title>Weather App</title>
 </head>
 <body>
-  <form action="get">
-    <input type="text" name="city" placeholder="Search a city">
-    <button>Sumbit</button>
-  </form>
-  <div class="name"></div>
-  <div class="temp"></div>
-  <div class="weather"></div>
-  <div class="wind"></div>
-  <div class="err"></div>
+  <div class="search">
+    <form action="get">
+      <input type="text" name="city" placeholder="Search a city">
+      <button>Sumbit</button>
+    </form>
+    <div class="err"></div>
+  </div>
+  <div class="weather_card">
+    <div class="name"></div>
+    <div class="icon-container">
+      <img class="icon" src="" alt="">
+    </div>
+    <div class="temp"></div>
+    <div class="temp_feels_like"></div>
+    <div class="sunrise"></div>
+    <div class="sunset"></div>
+    <div class="weather"></div>
+    <div class="wind"></div>
+  </div>
 </body>
 </html>
