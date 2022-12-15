@@ -100,54 +100,46 @@ function getTime(unixTime, timezone, d = '') {
   }
 })();
 
-(async function getForecast(city) {
+(async function getForecasts(city) {
   try {
     let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&lang=en&appid=be2261b09598bb533e609e98c10fcace&units=metric`, { mode: 'cors' });
     let data = await response.json();
     console.log(data);
-    //
-    let localTimeZone = data.city.timezone
+    let localTimeZone = data.city.timezone //a number
     let localDate = getTime(Math.floor(Date.now() / 1000), localTimeZone, 'd')
-    //console.log(localDate)
+    // indexNewDay < 7 coz here we need to find the next day based on timezones where the cities are.
+    // if a place is now at 0:00, the frames would be 3,6,9,12,15,18,21,0(next day)
+    // if a place is now @ 23:59, frames would be 0(next day)
     for (let indexNewDay = 0; indexNewDay <= 7; indexNewDay++) {
       if (localDate !== getTime(data.list[indexNewDay].dt, localTimeZone, 'd')) {
         let tempArr = [];
         // The API only offers every 3-hour forecast over 5 days without local time conversion.
         // So I have to convert to local time based on city. 
-        // Day 1, 'indexNewDay' is equal to the first time frame after a new day.
-        for (let i = indexNewDay; i <= indexNewDay + 7; i++) {
-          tempArr.push(data.list[i].main.temp)
-        }
-        document.querySelector('#fc_temp_day1').textContent =
-          `${Math.min(...tempArr)} °/${Math.max(...tempArr)} °`
-        tempArr = [] //clearout
-        // Day 2
-        for (let i = indexNewDay + 8; i <= indexNewDay + 15; i++) {
-          tempArr.push(data.list[i].main.temp)
-        }
-        document.querySelector('#fc_temp_day2').textContent =
-          `${Math.min(...tempArr)} °/${Math.max(...tempArr)} °`
-        tempArr = [] //clearout
-        // Day 3
-        for (let i = indexNewDay + 16; i <= indexNewDay + 23; i++) {
-          tempArr.push(data.list[i].main.temp)
-        }
-        document.querySelector('#fc_temp_day3').textContent =
-          `${Math.min(...tempArr)} °/${Math.max(...tempArr)} °`
-        // Day 3 OVER
+        // 'indexNewDay': an index that points to the first time frame after a new day.
+        forecast_dates.forEach((f_date, index) => {
+          let dateIndex = indexNewDay + index * 8;
+          f_date.textContent = getTime(data.list[dateIndex].dt, localTimeZone, 'd')
+        })
+
+        for (let i = indexNewDay; i <= indexNewDay + 23; i++) {
+          //indexNewDay doesn't come form 0, but tempArr does
+          tempArr.push([data.list[i].main.temp]) 
+        } //tempArr is neccessary coz we need find max and min
+        forecast_temps.forEach((f_temp, index) => {
+          //0,8; 8,16; 16,24; three days
+          let tempForTheDay = tempArr.slice(index * 8, index * 8 + 8)
+          f_temp.textContent = `${Math.min(...tempForTheDay)} °/ ${Math.max(...tempForTheDay)} °`
+        }) 
+
+        forecast_weathers.forEach((f_weather, index) => {
+          //index at 12:00, 4, 12, 20
+          let noonIndex = indexNewDay + index * 8 + 4
+          f_weather.src = `https://openweathermap.org/img/wn/${data.list[noonIndex].weather[0].icon}.png`
+        })
+        return;
       }
     }
-    //
-    showForecast(data)
   } catch (err) {
     console.log(err);
   };
-})('honolulu');
-
-function showForecast(data) {
-  let arrayIndex = 5;
-  forecast_dates.forEach(f_date => {
-    f_date.textContent = getTime(data.list[arrayIndex].dt, data.city.timezone, 'd')
-    arrayIndex += 8;
-  })
-}
+})('hiroshima');
