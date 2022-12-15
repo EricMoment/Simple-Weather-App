@@ -9,6 +9,9 @@ const icon = document.querySelector('.icon')
 const temp_feels_like = document.querySelector('.temp_feels_like')
 const sunrise = document.querySelector('.sunrise');
 const sunset = document.querySelector('.sunset')
+const forecast_date = document.querySelector('.forecast_date')
+const forecast_temp = document.querySelector('.forecast_temp')
+const forecast_weather = document.querySelector('.forecast_weather')
 
 async function getWeather(city) {
   try {
@@ -33,7 +36,7 @@ function showData(data) {
   temp_feels_like.textContent = `${data.main.feels_like} °`
   weather.textContent = capitalizeLetters(data.weather[0].description);
   icon.alt = data.weather[0].description;
-  icon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
+  icon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
   wind.textContent = `${data.wind.speed} m/s`
   sunrise.textContent = getTime(data.sys.sunrise, data.timezone)
   sunset.textContent = getTime(data.sys.sunset, data.timezone)
@@ -86,4 +89,14 @@ function getTime(unixTime, timezone) {
     await new Promise(resolve => setTimeout(resolve, 500000));
     list.push(list.shift());
   }
-})()
+})();
+
+(async function getForecast(city) {
+  try {
+    let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&lang=en&appid=be2261b09598bb533e609e98c10fcace&units=metric`, {mode: 'cors'});
+    let data = await response.json();
+    console.log(data);
+  } catch(err) {
+    console.log(err);
+  };
+})('hiroshima');
