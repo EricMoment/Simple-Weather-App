@@ -9,9 +9,9 @@ const icon = document.querySelector('.icon')
 const temp_feels_like = document.querySelector('.temp_feels_like')
 const sunrise = document.querySelector('.sunrise');
 const sunset = document.querySelector('.sunset')
-const forecast_date = document.querySelector('.forecast_date')
-const forecast_temp = document.querySelector('.forecast_temp')
-const forecast_weather = document.querySelector('.forecast_weather')
+const forecast_dates = document.querySelectorAll('.forecast_date')
+const forecast_temps = document.querySelectorAll('.forecast_temp')
+const forecast_weathers = document.querySelectorAll('.forecast_weather')
 
 async function getWeather(city) {
   try {
@@ -19,12 +19,12 @@ async function getWeather(city) {
     const starttimer = Date.now()
     clearEntries()
     city_name.textContent = 'loading now...'
-    let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=en&appid=be2261b09598bb533e609e98c10fcace&units=metric`, {mode: 'cors'})
+    let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=en&appid=be2261b09598bb533e609e98c10fcace&units=metric`, { mode: 'cors' })
     let data = await response.json();
     console.log(data);
     showData(data);
-    console.log(`Elapsed Time: ${ (Date.now() - starttimer) / 1000} s`)
-  } catch(err) {
+    console.log(`Elapsed Time: ${(Date.now() - starttimer) / 1000} s`)
+  } catch (err) {
     err_bar.textContent = 'City Not Found'
     input.style.borderColor = 'red'
   }
@@ -62,13 +62,22 @@ function capitalizeLetters(str) {
   return `${word1Cap}${word1.slice(1)} ${word2Cap}${word2.slice(1)}`;
 }
 
-function getTime(unixTime, timezone) {
+function getTime(unixTime, timezone, d = '') {
   let convertedTime = new Date((unixTime + timezone) * 1000)
-  let hour = convertedTime.getUTCHours()
-  let min = convertedTime.getUTCMinutes()
-  if (hour < 10) { hour = '0' + hour }
-  if (min < 10) { min = '0' + min }
-  return `${hour}:${min}`
+  if (d === '') {
+    let [hour, min] = [convertedTime.getUTCHours(), convertedTime.getUTCMinutes()]
+    hour < 10 ? hour = '0' + hour : hour
+    min < 10 ? min = '0' + min : min
+    return `${hour}:${min}`
+  } else if (d === 'd') {
+    const monthArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
+      'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    let month = convertedTime.getUTCMonth()
+    let date = convertedTime.getUTCDate()
+    return `${monthArray[month]} ${date}`
+  } else {
+    throw Error('Parameter d must be either \'\' or \'d\'.')
+  }
 }
 
 (function searchCity() {
@@ -76,7 +85,7 @@ function getTime(unixTime, timezone) {
     e.preventDefault()
     let formData = new FormData(form)
     let city;
-    for (const [name,value] of formData) {city = value};
+    for (const [name, value] of formData) { city = value };
     getWeather(city)
   });
 })();
@@ -93,10 +102,52 @@ function getTime(unixTime, timezone) {
 
 (async function getForecast(city) {
   try {
-    let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&lang=en&appid=be2261b09598bb533e609e98c10fcace&units=metric`, {mode: 'cors'});
+    let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&lang=en&appid=be2261b09598bb533e609e98c10fcace&units=metric`, { mode: 'cors' });
     let data = await response.json();
     console.log(data);
-  } catch(err) {
+    //
+    let localTimeZone = data.city.timezone
+    let localDate = getTime(Math.floor(Date.now() / 1000), localTimeZone, 'd')
+    //console.log(localDate)
+    for (let indexNewDay = 0; indexNewDay <= 7; indexNewDay++) {
+      if (localDate !== getTime(data.list[indexNewDay].dt, localTimeZone, 'd')) {
+        let tempArr = [];
+        // The API only offers every 3-hour forecast over 5 days without local time conversion.
+        // So I have to convert to local time based on city. 
+        // Day 1, 'indexNewDay' is equal to the first time frame after a new day.
+        for (let i = indexNewDay; i <= indexNewDay + 7; i++) {
+          tempArr.push(data.list[i].main.temp)
+        }
+        document.querySelector('#fc_temp_day1').textContent =
+          `${Math.min(...tempArr)} °/${Math.max(...tempArr)} °`
+        tempArr = [] //clearout
+        // Day 2
+        for (let i = indexNewDay + 8; i <= indexNewDay + 15; i++) {
+          tempArr.push(data.list[i].main.temp)
+        }
+        document.querySelector('#fc_temp_day2').textContent =
+          `${Math.min(...tempArr)} °/${Math.max(...tempArr)} °`
+        tempArr = [] //clearout
+        // Day 3
+        for (let i = indexNewDay + 16; i <= indexNewDay + 23; i++) {
+          tempArr.push(data.list[i].main.temp)
+        }
+        document.querySelector('#fc_temp_day3').textContent =
+          `${Math.min(...tempArr)} °/${Math.max(...tempArr)} °`
+        // Day 3 OVER
+      }
+    }
+    //
+    showForecast(data)
+  } catch (err) {
     console.log(err);
   };
-})('hiroshima');
+})('honolulu');
+
+function showForecast(data) {
+  let arrayIndex = 5;
+  forecast_dates.forEach(f_date => {
+    f_date.textContent = getTime(data.list[arrayIndex].dt, data.city.timezone, 'd')
+    arrayIndex += 8;
+  })
+}
