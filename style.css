@@ -50,9 +50,13 @@ body {
   gap: 4px;
   margin: .5em;
 }
+
+.err {
+  min-height: 1em;
+}
 .weather_card {
   border-radius: 15px;
-  border: 1px solid rgb(118, 146, 170);
+  /* border: 1px solid rgb(118, 146, 170); */
   width: 600px;
   min-height: 250px;
   display: flex;
@@ -60,7 +64,7 @@ body {
   align-items: center;
   flex-direction: column;
   background-color:rgb(118, 146, 170);
-  padding: 8px;
+  padding: 8px 0;
 }
 form > * {
   border: 2px solid #000;
@@ -98,3 +102,14 @@ form > * {
   font-size: 1em;
 }
 
+.forecast {
+  border-radius: 15px;
+  background-color: rgb(118, 146, 170);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 600px;
+  min-height: 55px;
+  margin: 8px 0;
+  color: whitesmoke;
+}

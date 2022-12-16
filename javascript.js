@@ -18,49 +18,53 @@ async function getWeather(city) {
     input.style.borderColor = 'black'
     const starttimer = Date.now()
     clearEntries()
-    city_name.textContent = 'loading now...'
     let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=en&appid=be2261b09598bb533e609e98c10fcace&units=metric`, { mode: 'cors' })
     let data = await response.json();
     console.log(data);
     showData(data);
     console.log(`Elapsed Time: ${(Date.now() - starttimer) / 1000} s`)
   } catch (err) {
-    err_bar.textContent = 'City Not Found'
+    console.log(err)
+    err_bar.textContent = 'Something Wrong :/'
     input.style.borderColor = 'red'
   }
-}
+};
 
 function showData(data) {
   city_name.textContent = data.name
   temperature.textContent = `${data.main.temp} °`
   temp_feels_like.textContent = `${data.main.feels_like} °`
   weather.textContent = capitalizeLetters(data.weather[0].description);
-  icon.alt = data.weather[0].description;
-  icon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
   wind.textContent = `${data.wind.speed} m/s`
   sunrise.textContent = getTime(data.sys.sunrise, data.timezone)
   sunset.textContent = getTime(data.sys.sunset, data.timezone)
-}
+  icon.alt = data.weather[0].description;
+  icon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
+};
 
 function clearEntries() {
-  city_name.textContent = '';
-  temperature.textContent = '';
-  temp_feels_like.textContent = '';
+  city_name.textContent = 'loading now...'
+  temperature.textContent = '-';
+  temp_feels_like.textContent = '-';
   weather.textContent = '';
-  wind.textContent = '';
+  wind.textContent = '-';
   err_bar.textContent = '';
   icon.src = '';
   icon.alt = '';
-  sunrise.textContent = '';
-  sunset.textContent = '';
+  sunrise.textContent = '-';
+  sunset.textContent = '-';
 };
 
 function capitalizeLetters(str) {
-  let [word1, word2] = str.split(' ');
-  let word1Cap = word1.charAt(0).toUpperCase();
-  let word2Cap = word2.charAt(0).toUpperCase();
-  return `${word1Cap}${word1.slice(1)} ${word2Cap}${word2.slice(1)}`;
-}
+  if (/\s/.test(str)) {
+    let [word1, word2] = str.split(' ');
+    let word1Cap = word1.charAt(0).toUpperCase();
+    let word2Cap = word2.charAt(0).toUpperCase();
+    return `${word1Cap}${word1.slice(1)} ${word2Cap}${word2.slice(1)}`;
+  }
+  wordCap = str.charAt(0).toUpperCase();
+  return `${wordCap}${str.slice(1)}`
+};
 
 function getTime(unixTime, timezone, d = '') {
   let convertedTime = new Date((unixTime + timezone) * 1000)
@@ -87,21 +91,37 @@ function getTime(unixTime, timezone, d = '') {
     let city;
     for (const [name, value] of formData) { city = value };
     getWeather(city)
+    getForecasts(city)
   });
 })();
 
 (async function rotate_city() {
   //let list = ['brighton', 'miami', 'nagano', 'hiroshima', 'glasgow', 'castleford', 'beirut', 'kolkata', 'riyadh']
-  let list = ['hiroshima']
+  let list = ['miami,us']
   while (true) {
     getWeather(list[0])
-    await new Promise(resolve => setTimeout(resolve, 500000));
-    list.push(list.shift());
+    getForecasts(list[0])
+    await new Promise(resolve => setTimeout(resolve, 500440));
+    list.push(list.shift()); //rotate by moving list[0] to list[-1]
   }
 })();
 
-(async function getForecasts(city) {
+function clearEntriesForecasts() {
+  forecast_dates.forEach((f_date) => {
+    f_date.textContent = '-'
+  })
+  forecast_temps.forEach((f_temp) => {
+    f_temp.textContent = '-'
+  })
+  forecast_weathers.forEach((f_weather) => {
+    f_weather.src = ''
+  })
+}
+
+async function getForecasts(city) {
   try {
+    clearEntriesForecasts()
+    const starttimer = Date.now()
     let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&lang=en&appid=be2261b09598bb533e609e98c10fcace&units=metric`, { mode: 'cors' });
     let data = await response.json();
     console.log(data);
@@ -136,10 +156,11 @@ function getTime(unixTime, timezone, d = '') {
           let noonIndex = indexNewDay + index * 8 + 4
           f_weather.src = `https://openweathermap.org/img/wn/${data.list[noonIndex].weather[0].icon}.png`
         })
+        console.log(`Elapsed Time: ${(Date.now() - starttimer) / 1000} s`)
         return;
       }
     }
   } catch (err) {
     console.log(err);
   };
-})('hiroshima');
+}
