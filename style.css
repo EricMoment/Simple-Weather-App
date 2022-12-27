@@ -56,14 +56,13 @@ body {
 }
 .weather_card {
   border-radius: 15px;
-  /* border: 1px solid rgb(118, 146, 170); */
   width: 600px;
   min-height: 250px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color:rgb(118, 146, 170);
+  background-size: cover;
   padding: 8px 0;
 }
 form > * {
@@ -102,7 +101,7 @@ form > * {
   font-size: 1em;
 }
 
-.forecast {
+.forecast_cards {
   border-radius: 15px;
   background-color: rgb(118, 146, 170);
   display: flex;
@@ -111,5 +110,6 @@ form > * {
   width: 600px;
   min-height: 55px;
   margin: 8px 0;
+  background-size: cover;
   color: whitesmoke;
 }

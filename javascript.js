@@ -1,5 +1,6 @@
 const city_name = document.querySelector('.name');
 const temperature = document.querySelector('.temp');
+const weather_card = document.querySelector('.weather_card');
 const weather = document.querySelector('.weather');
 const wind = document.querySelector('.wind');
 const err_bar = document.querySelector('.err');
@@ -9,6 +10,7 @@ const icon = document.querySelector('.icon')
 const temp_feels_like = document.querySelector('.temp_feels_like')
 const sunrise = document.querySelector('.sunrise');
 const sunset = document.querySelector('.sunset')
+const forecast_cards = document.querySelectorAll('.forecast_cards')
 const forecast_dates = document.querySelectorAll('.forecast_date')
 const forecast_temps = document.querySelectorAll('.forecast_temp')
 const forecast_weathers = document.querySelectorAll('.forecast_weather')
@@ -40,7 +42,28 @@ function showData(data) {
   sunset.textContent = getTime(data.sys.sunset, data.timezone)
   icon.alt = data.weather[0].description;
   icon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
+  showBackground(data.weather[0].icon, weather_card)
 };
+
+function showBackground(data, card) {
+  switch (data) {
+    case '01d': case '01n': case '02d': case '02n':
+      card.style.cssText = "background-image: url(sunny.jpg)";
+      break;
+    case '03d': case '03n': case '04d': case '04n':
+      card.style.cssText = "background-image: url(cloud.gif)";
+      break;
+    case '09d': case '09n': case '10d': case '10n': case '11d': case '11n':
+      card.style.cssText = "background-image: url(rain.gif)";
+      break;
+    case '13d': case '13n':
+      card.style.cssText = "background-image: url(snow.gif)";
+      break;
+    case '50d': case '50n':
+      card.style.cssText = "background-image: url(haze.webp)";
+      break;
+  }
+}
 
 function clearEntries() {
   city_name.textContent = 'loading now...'
@@ -96,12 +119,12 @@ function getTime(unixTime, timezone, d = '') {
 })();
 
 (async function rotate_city() {
-  //let list = ['brighton', 'miami', 'nagano', 'hiroshima', 'glasgow', 'castleford', 'beirut', 'kolkata', 'riyadh']
-  let list = ['miami,us']
+  let list = ['brighton', 'Tromsø', 'nagano', 'hiroshima', 'sydney', 'yekaterinburg', 'cape town', 'kolkata', 'jeddah', 'sapporo']
+  //let list = ['miami,us']
   while (true) {
     getWeather(list[0])
     getForecasts(list[0])
-    await new Promise(resolve => setTimeout(resolve, 500440));
+    await new Promise(resolve => setTimeout(resolve, 5000));
     list.push(list.shift()); //rotate by moving list[0] to list[-1]
   }
 })();
@@ -155,6 +178,11 @@ async function getForecasts(city) {
           //index at 12:00, 4, 12, 20
           let noonIndex = indexNewDay + index * 8 + 4
           f_weather.src = `https://openweathermap.org/img/wn/${data.list[noonIndex].weather[0].icon}.png`
+        })
+
+        forecast_cards.forEach((card, index) => {
+          let noonIndex = indexNewDay + index * 8 + 4;
+          showBackground(data.list[noonIndex].weather[0].icon, card)
         })
         console.log(`Elapsed Time: ${(Date.now() - starttimer) / 1000} s`)
         return;
