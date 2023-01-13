@@ -133,11 +133,34 @@ form > * {
     -webkit-text-size-adjust: none;
   }
 
+  .title {
+    font-size: 2em;
+  }
+
   .weather_card {
-    width: 250px;
+    width: 280px;
+  }
+
+  .top {
+    justify-content: center;
+  }
+
+  .temp_feels_like_container,
+  .sunrise_container,
+  .sunset_container,
+  .wind_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .temp_feels_like_container > p,
+  .wind_container > p {
+    text-align: center;
   }
 
   .forecast_cards {
-    width: 250px;
+    width: 280px;
   }
 }
