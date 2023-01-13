@@ -33,7 +33,6 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: lightgray;
   padding: 16px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
@@ -57,7 +56,7 @@ body {
 .weather_card {
   border-radius: 15px;
   width: 600px;
-  min-height: 250px;
+  height: 250px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,14 +72,16 @@ form > * {
 }
 
 .top {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  width: 400px;
+  height: 118.4px;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .bottom {
-  flex: 1;
   display: grid;
+  height: 94px;
   grid-template-columns: repeat(4, 1fr)
 }
 
@@ -103,13 +104,40 @@ form > * {
 
 .forecast_cards {
   border-radius: 15px;
-  background-color: rgb(118, 146, 170);
   display: flex;
   justify-content: space-around;
   align-items: center;
   width: 600px;
-  min-height: 55px;
+  height: 55px;
   margin: 8px 0;
   background-size: cover;
   color: whitesmoke;
+}
+
+@media screen and (max-width: 620px) {
+  body {
+    -webkit-text-size-adjust: none;
+  }
+
+  .weather_card {
+    width: 400px;
+  }
+
+  .forecast_cards {
+    width: 400px;
+  }
+}
+
+@media screen and (max-width: 398px) {
+  body {
+    -webkit-text-size-adjust: none;
+  }
+
+  .weather_card {
+    width: 250px;
+  }
+
+  .forecast_cards {
+    width: 250px;
+  }
 }

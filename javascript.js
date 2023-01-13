@@ -27,7 +27,7 @@ async function getWeather(city) {
     console.log(`Elapsed Time: ${(Date.now() - starttimer) / 1000} s`)
   } catch (err) {
     console.log(err)
-    err_bar.textContent = 'Something Wrong :/'
+    err_bar.textContent = 'Please type a compelete city name :)'
     input.style.borderColor = 'red'
   }
 };
@@ -42,13 +42,14 @@ function showData(data) {
   sunset.textContent = getTime(data.sys.sunset, data.timezone)
   icon.alt = data.weather[0].description;
   icon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
+
   showBackground(data.weather[0].icon, weather_card)
 };
 
 function showBackground(data, card) {
   switch (data) {
     case '01d': case '01n': case '02d': case '02n':
-      card.style.cssText = "background-image: url(sunny.jpg)";
+      card.style.cssText = "background-image: url(sunny.jpeg)";
       break;
     case '03d': case '03n': case '04d': case '04n':
       card.style.cssText = "background-image: url(cloud.gif)";
@@ -124,7 +125,7 @@ function getTime(unixTime, timezone, d = '') {
   while (true) {
     getWeather(list[0])
     getForecasts(list[0])
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await new Promise(resolve => setTimeout(resolve, 10000));
     list.push(list.shift()); //rotate by moving list[0] to list[-1]
   }
 })();
