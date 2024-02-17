@@ -54,6 +54,7 @@ body {
   min-height: 1em;
 }
 .weather_card {
+  border: 2px solid #000;
   border-radius: 15px;
   width: 600px;
   height: 250px;
@@ -103,6 +104,8 @@ form > * {
 }
 
 .forecast_cards {
+  border: 2px solid #000;
+
   border-radius: 15px;
   display: flex;
   justify-content: space-around;

@@ -119,16 +119,19 @@ function getTime(unixTime, timezone, d = '') {
   });
 })();
 
-(async function rotate_city() {
-  let list = ['brighton', 'Tromsø', 'nagano', 'hiroshima', 'sydney', 'yekaterinburg', 'cape town', 'kolkata', 'jeddah', 'sapporo']
-  //let list = ['miami,us']
+getWeather('Tokyo')
+getForecasts('Tokyo')
+
+
+async function rotate_city() {
+  let list = ['brighton', 'Tromsø', 'hiroshima', 'sydney', 'yekaterinburg', 'cape town', 'kolkata', 'jeddah']
   while (true) {
     getWeather(list[0])
     getForecasts(list[0])
     await new Promise(resolve => setTimeout(resolve, 10000));
     list.push(list.shift()); //rotate by moving list[0] to list[-1]
   }
-})();
+};
 
 function clearEntriesForecasts() {
   forecast_dates.forEach((f_date) => {
