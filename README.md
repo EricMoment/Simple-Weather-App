@@ -1,4 +1,4 @@
-#Weather App
+# Weather App
 
 The app shows daily and 3-day forecast temperatures in a city. 
 
